@@ -1,0 +1,60 @@
+Создание БД и таблиц  в рамках локального сервера:
+
+Анализ таблицы hits_v1 и visits_v1:  
+Выполнить несколько запросов и оценить скорость выполнения: 
+
+1) SELECT
+    StartURL AS URL,
+    AVG(Duration) AS AvgDuration
+FROM tutorial_2.visits_v1
+WHERE StartDate BETWEEN '2014-03-23' AND '2014-03-30'
+GROUP BY URL
+ORDER BY AvgDuration DESC
+LIMIT 10
+
+Результат: 10 rows in set. Elapsed: 0.162 sec. Processed 3.36 million rows, 268.35 MB (20.68 million rows/s., 1.65 GB/s.)
+Peak memory usage: 458.31 MiB.
+
+2) SELECT
+    sum(Sign) AS visits,
+    sumIf(Sign, has(Goals.ID, 1105530)) AS goal_visits,
+    (100. * goal_visits) / visits AS goal_percent
+FROM tutorial_2.visits_v1
+WHERE (CounterID = 912887) AND (toYYYYMM(StartDate) = 201403)
+
+Результат: 1 row in set. Elapsed: 0.020 sec.
+
+
+Вывод: 
+1) Высокая скорость обработки запроса большого кол-ва строк.
+
+
+Анализ таблицы hits_v1 и visits_v1:  
+Выполнить несколько запросов и оценить скорость выполнения: 
+
+0) Загрузка 29.47 миллионов строк:
+   0 rows in set. Elapsed: 598.597 sec. Processed 29.47 million rows, 5.16 GB (49.23 thousand rows/s., 8.62 MB/s.)
+Peak memory usage: 453.45 MiB.
+
+
+1) SELECT count()
+FROM real_estate.uk_price_paid
+
+Query id: 069805e2-ceff-41b1-bc35-0597870c0d99
+
+   ┌──count()─┐
+1. │ 29469781 │ -- 29.47 million
+   └──────────┘
+
+1 row in set. Elapsed: 0.005 sec.
+
+2) SELECT formatReadableSize(total_bytes)
+FROM system.tables
+WHERE name = 'uk_price_paid'
+
+1 row in set. Elapsed: 0.003 sec.
+
+Вывод: 
+1) Высокая скорость записи и обработки запроса большого кол-ва строк.
+
+
